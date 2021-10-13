@@ -1,0 +1,1 @@
+Aqui ficarão os comandos, detalhes e bibliotecas utulizadas durante as aulas.
