@@ -47,3 +47,4 @@ npm install faker-br
 
     Para Alterar tabela
     ALTER TABLE pesquisas ADD resposta int(2) AFTER pergunta;
+    ALTER TABLE pesquisas ADD finalizado varchar(3) DEFAULT 'nao';

@@ -82,5 +82,6 @@ routes.delete('/deletar_pesquisa/:id', Pesquisas.deletar);
 routes.post('/login/', validarLogin);
 
 routes.post('/enviar_pesquisa', Venom.enviar);
+routes.post('/zap_valido', Venom.zap_valido);
 
 module.exports = routes;

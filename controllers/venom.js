@@ -4,6 +4,7 @@ const conexao = require('../conexao');
 var mensagem_padrao = 'Oi, aqui é da Empresa X, entre em contato conosco pelo tel (77)3452-8854';
 var mensagem_resp_errada = "Por favor, digite um número válido entre 0 e 10";
 var mensagem_agradecendo = "A Empresa X agradece a sua participação.";
+var mensagem_ja_respondeu = "Caro Cliente, você já respondeu a pesquisa. Caso queira entrar em contato conosco, utilize um de nossos canais de atendimento: (77)3452-8854";
 var envio;
 const respostasTexto = ['UM',1,'um',1,'Um',1,'DOIS',2,'dois',2,'Dois',2,'TRES',3,'TRÊS',3,'TREZ',3,'Tres',3,'Três',3,'Trez',3,
 'tres',3,'três',3,'trez',3,'QUATRO',4,'Quatro',4,'quatro',4,'CINCO',5,'Cinco',5,'cinco',5,'SEIS',6,'Seis',6,'seis',6,'SETE',7,
@@ -40,29 +41,42 @@ async function chamar(numero, mensagem){
   await verifica_numero(numero).then((res)=>{
     // Se o número participa da pesquisa
     if(res.length === 1){
-      console.log();
-      console.log(time(),"Número faz parte da pesquisa: id:",res[0].id, " - Resposta:",mensagem);
-      // Verifica se a resposta é válida
-      respostasTexto.forEach((item, index)=>{ 
-        if(message.body === item){ 
-          resp_correta = true;
-          nota = respostasTexto[index+1]; 
-        } 
-      });
-
-      //Se a resposta for válida
-      if(resp_correta){
-
+      // Se o número já respondeu corretamente a pesquisa
+      if(res[0].finalizado == 'sim'){
+        msg(numero, mensagem_ja_respondeu);
       }
-      //Se a resposta NÃO for válida
+      // Se o cliente participa da pesquisa e ainda não respondeu corretamente
       else{
-        msg(numero, mensagem_resp_errada);
+        console.log(time(),"Número faz parte da pesquisa: id:",res[0].id, " - Resposta:",mensagem);
+
+        // Verifica se a resposta é válida
+        respostasTexto.forEach((item, index)=>{
+          if(mensagem === item){ 
+            resp_correta = true;
+            nota = respostasTexto[index+1]; 
+          } 
+        });
+  
+        //Se a resposta for válida
+        if(resp_correta){
+            let sql = `UPDATE pesquisas SET resposta= '${nota}', finalizado='sim', hora_resp=NOW() WHERE id= ${res[0].id}`;
+            conexao.query(sql, function (err, result, fields) {
+              if (err){
+                console.log(time(),"Erro ao gravar no BD", err); 
+              }else{
+                msg(numero, mensagem_agradecendo);
+                console.log(time(),"Respota Gravada no BD"); 
+              }
+            });  
+        }
+        //Se a resposta NÃO for válida
+        else{
+          msg(numero, mensagem_resp_errada);
+        }
+        //Zerar as variáveiss
+        resp_correta = false;
+        nota = 0;
       }
-      //Zerar as variáveis
-      resp_correta = false;
-      nota = 0;
-
-
     }
     // Se o número não participa da pesquisa
     else{
@@ -84,18 +98,9 @@ function start(client) {
   envio = client;
   client.onMessage((message) => {
     envio = client;
-
-
-      if (message.body.length > 1 && message.isGroupMsg === false) {
+      if (message.body.length != 0 && message.isGroupMsg === false) {
         chamar(message.from, message.body);
       }
-
-
-
-
-
-
-
   });
 }
 
@@ -148,6 +153,34 @@ class Zap{
       });
     });
 
+  }
+
+  async zap_valido(req, res){
+    const cel = String("55" + req.body.cel + "@c.us");
+    const texto = "WhatsApp válido";
+    console.log(time(),`Acessou ${texto}`);
+
+    await envio.checkNumberStatus(cel)
+    .then((result) => { 
+      console.log(time(),"WhatsApp OK ", req.body.cel);
+      return res.status(200).json({
+          error: "nao",
+          code: result.status,
+          msg: "WhatsApp OK",
+          isBusiness: result.isBusiness,
+          pode_receber_mensagens: result.canReceiveMessage,
+          numero_existe: result.numberExists
+      });
+    }).catch((erro) => {
+      console.log(time(),"WhatsApp INVALIDO");
+      return res.status(200).json({
+          error: "sim",
+          code: erro.status,
+          msg: "WhatsApp INVALIDO",
+          isBusiness: erro.isBusiness,
+          pode_receber_mensagens: erro.canReceiveMessage
+      });
+    });
   }
 
 }
