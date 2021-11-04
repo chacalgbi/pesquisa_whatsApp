@@ -3,6 +3,7 @@ const Usuarios = require('./controllers/usuarios');
 const Clientes = require('./controllers/clientes');
 const Perguntas = require('./controllers/perguntas');
 const Pesquisas = require('./controllers/pesquisas');
+const PesquisasRealizadas = require('./controllers/pesquisas_realizadas');
 const Venom = require('./controllers/venom');
 const time = require('./config/dataHora');
 const conexao = require('./conexao');
@@ -77,6 +78,11 @@ routes.get('/mostrar_pesquisa/:id', Pesquisas.mostrar);
 routes.post('/cadastrar_pesquisa', Pesquisas.cadastrar);
 routes.put('/editar_pesquisa', Pesquisas.editar);
 routes.delete('/deletar_pesquisa/:id', Pesquisas.deletar);
+
+//Pesquisas Realizadas
+routes.get('/listar_pesquisas_realizadas', PesquisasRealizadas.listar);
+routes.post('/cadastrar_pesquisa_realizada', PesquisasRealizadas.cadastrar);
+
 
 //LOGIN
 routes.post('/login/', validarLogin);

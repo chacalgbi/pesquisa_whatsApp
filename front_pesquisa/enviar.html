@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<!-- Designined by CodingLab | www.youtube.com/codinglabyt -->
+<html lang="pt-br">
+  <head>
+      <!-- Não indexa página-->
+      <meta name="robots" content="noindex">
+      <meta charset="UTF-8">
+      <title>Enviar Pesquisa</title>
+      <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon/micks-favico-32x32-1.png">
+      <link rel="stylesheet" href="assets/css/style-menu.css">
+      <link href="assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+      <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  	  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  	  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+      <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+      <script src="./assets/pace.js"></script>
+      <link rel="stylesheet" href="radar.css">
+      <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.11.3/datatables.min.css"/>
+      <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.11.3/datatables.min.js"></script>
+  </head>
+<body>
+
+  <div id="header" class="sidebar close"> <!-- Menu -->
+    <div class="logo-details"><i class='bx bxl-medium-square'></i><span class="logo_name">Micks T.</span></div>
+    <ul class="nav-links">
+      <li>
+        <a href="lista.html"><i class='bx bx-search-alt'></i><span class="link_name">Pesquisas</span></a>
+        <ul class="sub-menu blank"><li><a class="link_name" href="lista.html">Pesquisas</a></li></ul>
+      </li>
+      <li>
+        <a href="clientes.html"><i class='bx bx-angry'></i><span class="link_name">Clientes</span></a>
+        <ul class="sub-menu blank"><li><a class="link_name" href="clientes.html">Clientes</a></li></ul>
+      </li>
+      <li>
+        <a href="enviar.html"><i class='bx bx-mail-send'></i><span class="link_name">Enviar Pesquisa</span></a>
+        <ul class="sub-menu blank"><li><a class="link_name" href="enviar.html">Enviar Pesquisa</a></li></ul>
+      </li>
+      <li>
+        <a href="perguntas.html"><i class='bx bx-question-mark'></i><span class="link_name">Perguntas</span></a>
+        <ul class="sub-menu blank"><li><a class="link_name" href="perguntas.html">Perguntas</a></li></ul>
+      </li>
+      <li>
+        <a href="grafico.html"><i class='bx bx-line-chart'></i><span class="link_name">Gráfico</span></a>
+        <ul class="sub-menu blank"><li><a class="link_name" href="perguntas.html">Gráfico</a></li></ul>
+      </li>
+      <li>
+        <a href="" onclick="sair()"><i class='bx bx-log-out' ></i><span class="link_name">Sair</span></a>
+        <ul class="sub-menu blank"><li><a class="link_name" href="" onclick="sair()">Sair</a></li></ul>
+      </li>
+      <li>
+        <div class="profile-details"><div class="profile-content"><img src="assets/img/avatar_micks.png" alt="profile"></div></div>
+      </li>
+    </ul>
+  </div><!-- Menu -->
+
+  <section class="home-section">
+    <div class="home-content">
+      <i class='bx bx-menu' ></i>
+      <span class="text"></span>
+    </div>
+  </section>
+
+  
+  <div class="home-section">
+    <div class="container-fluid">
+      <h1 class="h3 mb-2 text-gray-800" id="msg"><i class='bx bx-task'></i> Enviar Pesquisa</h1>
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+          <div class="card-body">
+            <!-- INICIO - Coloque todo seu HTML Aqui -->
+
+
+            <select class="form-control" onchange="inserir_pergunta()" id="selecionar_pergunta"></select>
+            <textarea rows="6" class="form-control" id="visualizar_pergunta" placeholder="Aguardando..." readonly></textarea>
+            <br/>
+
+              <div class="row Linha1">
+                <div class="selec_cli col-sm-4" style="background-color:lightgrey; border-radius: 10px; margin-right: 8px; padding: 18px;">
+                  <h4>Buscar Clientes </h4>
+                  <button class="btn btn-outline-danger" onclick="buscar_clientes()">Buscar</button>
+                  <br/>
+                  <hr>
+                    <table id="tabela" class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th scope="col">#</th>
+                          <th scope="col">Nome</th>
+                          <th scope="col">Celular</th>
+                        </tr>
+                      </thead>
+                      <tbody id="corpo">
+                      </tbody>
+                    </table>
+                </div>
+                <div class="verifica_zap col-sm-4" style="background-color:lightgrey; border-radius: 10px; margin-right: 8px; padding: 18px;">
+                  <h4>Verificar Números</h4>
+                  <button class="btn btn-outline-info" onclick="verificar_numeros()">Verificar</button>
+                  <br/>
+                  <hr>
+                  <table id="tabela1" class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="corpo1">
+                    </tbody>
+                  </table>
+                </div>
+                <div class="envia_pes col-sm-3" style="background-color:lightgrey; border-radius: 10px; padding: 18px;">
+                  <h4>Enviar Pesquisa</h4>
+                  <button class="btn btn-outline-success" onclick="confirmacao_de_envio()">Enviar</button>
+                  <br/>
+                  <hr>
+                  <span id="total_progress">Progresso do Envio: </span>
+                  <div class="progress"><div class="progress-bar progress-bar-striped bg-success progress-bar-animated" id="progress_parcial" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div></div>
+                  </br>
+                  <span id="total_label">Total: </span>
+                  <div class="progress"><div class="progress-bar progress-bar-striped bg-info progress-bar-animated" id="progress_total" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div></div>
+                  </br>
+                </div>
+              </div>
+
+
+
+            <!-- FIM - Coloque todo seu HTML Aqui -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+  <script src="assets/js/menu_drop_down_Sidebar.js"></script> 
+  <script src="assets/js/data_tables.js"></script>
+  <script src="assets/js/notify.js"></script>
+  <script>
+    // Coloque todo seu JavaScript aqui.
+    var clientes = [];
+    var clientes_OK = [];
+    var validos = 0;
+    var invalidos = 0;
+    var texto = "";
+    var titulo = "";
+    const ip = sessionStorage.ip;
+    const usuario = sessionStorage.user;
+
+    function sair(){
+      sessionStorage.login = 'NOT';
+      sessionStorage.ip = '...';
+      location.replace("index.html");
+    }
+
+    // 1 - Pega no BD a lista de perguntas e coloca no select
+    function listar_perguntas(){
+      axios.get(`${ip}listar_perguntas`).then(function (response) {
+          perguntas = '<option disabled selected>Selecione a pergunta</option>';
+          //console.log(response.data.resposta);
+          response.data.resposta.map((item, index)=>{
+            perguntas = perguntas + `<option value="${item.pergunta}">${item.titulo}</option>`
+        });
+        document.getElementById('selecionar_pergunta').innerHTML = perguntas; 
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    }
+
+    // 2 - Cola a pergunta selecionada em um TextArea
+    function inserir_pergunta(){
+      texto = document.getElementById('selecionar_pergunta').value;
+      document.getElementById('visualizar_pergunta').value  = texto;
+      let select = document.getElementById('selecionar_pergunta');
+      let option = select.children[select.selectedIndex];
+      titulo = option.textContent;
+    }
+
+    // 3 - Busca os clientes do BD e lista em uma tabela
+    function buscar_clientes(){
+      axios.get(`${ip}listar_clientes`).then(function (response) {
+        let tabela = ""
+        //console.log(response.data.resposta);
+        clientes = response.data.resposta;
+        response.data.resposta.map((item, index)=>{
+          tabela = tabela + `<tr><td>${index+1}</td><td>${item.nome}</td><td>${item.celular}</td></tr>`;
+        });
+        document.getElementById('corpo').innerHTML = tabela; 
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    }
+
+    // 4 - verifica os números obtidos anteriormente e separa os válidos dos inválidos
+    async function verificar_numeros(){
+      for (const [index, cliente] of clientes.entries()) {
+            const resultado = await verificar_zap_valido(cliente.celular);
+            if(resultado == 'nao'){
+                validos ++;
+                //console.log(cliente.nome,"possui ZAP válido:", cliente.celular);
+                clientes_OK.push(cliente);
+                $("#corpo1").append(`<tr><td>${index+1}</td><td>${cliente.nome}</td><td><img src='./assets/img/ok.png' width='40' height='40'></img></td></tr>`);
+            }else{
+                invalidos++;
+                $("#corpo1").append(`<tr><td>${index+1}</td><td>${cliente.nome}</td><td><img src='./assets/img/erro.png' width='50' height='50'></img></td></tr>`);
+            }
+        }
+
+        //console.log("Válidos:    ", validos);
+        //console.log("Inválidos:  ", invalidos);
+        console.log("Clientes OK : ", clientes_OK);
+
+        Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: `Do total de ${clientes.length} registros: ${validos} clientes tem celular com WhatsApp válidos. E ${invalidos} números não possuem Whatsapp!`,
+        showConfirmButton: true,
+        timer: 15000
+      });
+
+    }
+
+    // 5 - Faz a verificação do número chamando a API do VENOM
+    function verificar_zap_valido(cel){
+      const formatado = cel.replace(/\D+/g, "");
+      return new Promise((resolve, reject) =>{
+        axios.post(`${ip}zap_valido`,{cel: formatado})
+        .then((res)=>{
+            resolve(res.data.error);
+        })
+        .catch((erro)=>{
+            reject(erro);
+        });
+      });
+    }
+
+    // 6 - Pergunta se deseja realmente enviar a pesquisa.
+    function confirmacao_de_envio(){
+      Swal.fire({
+        title: `${usuario}, tem certeza?`,
+        text: `Deseja enviar esta pesquisa para ${validos} clientes?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sim, Desejo!',
+        cancelButtonText: 'Cancelar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          document.getElementById('total_label').innerHTML = `Total: ${validos}`;
+          $('#progress_total').css('width', '100%').attr('aria-valuenow', 100).html('100%');
+          $('#progress_parcial').css('width', '0%').attr('aria-valuenow', 0).html('0%');
+          enviar_pesquisa();
+        }else{
+          Swal.fire('Envio Cancelado!')
+        }
+      })
+    }
+
+    // 7 - Chama a API do VENOM para enviar a pesquisa.
+    async function enviar_pesquisa(){
+      let erro = 'sim';
+
+      await pesquisa_realizada().then((res)=>{
+        console.log("Pesquisa Realizada. Erro:",res);
+        erro = res; 
+      }).catch((erro)=>{
+        console.log(erro);
+      });
+
+      if(erro === 'nao'){
+        for(const [i, x] of clientes_OK.entries()) {
+          const resultado = await enviar_venom(x);
+
+          if(resultado == false){
+            $.notify(`Enviado para ${x.nome}`, "success");
+          }else{
+            $.notify(`Erro ao enviar para ${x.nome}`, "error");
+          }
+        }
+      }
+    }
+
+    // 8 - Envia a pesquisa via VENOM
+    function enviar_venom(cli){
+      console.log("Cli", cli);
+      const formatado = cli.celular.replace(/\D+/g, "");
+      return new Promise((resolve, reject) =>{
+        axios.post(`${ip}enviar_pesquisa`,{
+          usuario: usuario,
+          titulo: titulo,
+          pergunta: texto,
+          cliente: cli.nome,
+          cel: formatado
+        })
+        .then((res)=>{
+            resolve(res.data.error);
+        })
+        .catch((erro)=>{
+            reject(erro);
+        });
+      });
+    }
+
+    
+    // 9 - Cadastra a Pesquisa Realizada
+    function pesquisa_realizada(){
+      return new Promise((resolve, reject)=>{
+        axios.post(`${ip}cadastrar_pesquisa_realizada`,{
+          topico: titulo,
+          pergunta: texto,
+          usuario: usuario,
+          qtd_clientes: validos
+        })
+        .then((res)=>{
+            resolve(res.data.error);
+        })
+        .catch((erro)=>{
+            reject(erro);
+        });
+      });
+    }
+
+    listar_perguntas();
+  </script>
+</body>
+</html>

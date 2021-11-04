@@ -31,9 +31,35 @@ function verifica_numero(numero){
               
           }else{
             let resposta = JSON.parse(JSON.stringify(resultado));
-              resolve(resposta);
+            resolve(resposta);
           }
       });
+  });
+}
+
+async function imagem(img, numero) {
+  await envio.sendImage(
+    numero,
+    img,
+    'image-name',
+    'Você já respondeu! Obrigado por participar!'
+  )
+  .then((result) => {
+    //console.log('Result: ', result); //return object success
+  })
+  .catch((erro) => {
+    console.error('Error when sending: ', erro); //return object error
+  });
+ 
+}
+
+async function localizacao(numero) {
+  await envio.sendLocation(numero, '-14.2266282', '-42.7831804', 'Guanambi, Bahia BR')
+  .then((result) => {
+    //console.log('Result: ', result); //return object success
+  })
+  .catch((erro) => {
+    console.error('Error when sending: ', erro); //return object error
   });
 }
 
@@ -44,6 +70,7 @@ async function chamar(numero, mensagem){
       // Se o número já respondeu corretamente a pesquisa
       if(res[0].finalizado == 'sim'){
         msg(numero, mensagem_ja_respondeu);
+        imagem('./img/ok.jpg', numero);
       }
       // Se o cliente participa da pesquisa e ainda não respondeu corretamente
       else{
@@ -79,8 +106,9 @@ async function chamar(numero, mensagem){
       }
     }
     // Se o número não participa da pesquisa
-    else{
+    else{ 
       msg(numero, mensagem_padrao);
+      localizacao(numero) ;
     }
   }).catch((er)=>{
       console.log(time(),er);
@@ -119,12 +147,13 @@ class Zap{
 
 
     await envio.sendText(cel, pergunta).then((result) => {
-      //console.log(time(),'Pesquisa Enviada:', result);
+      console.log(time(),'Pesquisa Enviada:', result);
       let idchat = result.to.remote._serialized;
       let sql = `INSERT INTO pesquisas (usuario, cliente, idchat, titulo, pergunta) VALUES ("${usuario}","${cliente}","${idchat}","${titulo}","${pergunta}")`;
       conexao.query(sql, function (err, result, fields) {
         if (err){
             console.log(time(),"Erro ao gravar no BD");
+            console.log(time(),err);
             return res.status(200).json({
                 error: true,
                 code: 404,
@@ -136,7 +165,7 @@ class Zap{
             //console.log(time(),resposta[0]);
             console.log(time(),"Pesquisa Enviada e Gravada");
             return res.status(200).json({
-                error: "false",
+                error: false,
                 code: 200,
                 msg: "Pesquisa Enviada e Gravada"
             });
@@ -159,7 +188,7 @@ class Zap{
     const cel = String("55" + req.body.cel + "@c.us");
     const texto = "WhatsApp válido";
     console.log(time(),`Acessou ${texto}`);
-
+    console.log(time(),`Numero ${cel}`);
     await envio.checkNumberStatus(cel)
     .then((result) => { 
       console.log(time(),"WhatsApp OK ", req.body.cel);

@@ -48,3 +48,13 @@ npm install faker-br
     Para Alterar tabela
     ALTER TABLE pesquisas ADD resposta int(2) AFTER pergunta;
     ALTER TABLE pesquisas ADD finalizado varchar(3) DEFAULT 'nao';
+
+
+
+
+
+
+    enviar.html
+
+    - Selecionar uma das perguntas pelo tópico atravéz de um select, ao selecionar, deve aparecer a pergunta em uma textArea.
+    -

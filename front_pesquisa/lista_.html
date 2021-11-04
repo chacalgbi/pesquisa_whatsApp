@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<!-- Designined by CodingLab | www.youtube.com/codinglabyt -->
+<html lang="pt-br">
+  <head>
+      <!-- Não indexa página-->
+      <meta name="robots" content="noindex">
+      <meta charset="UTF-8">
+      <title>Lista de Clientes</title>
+      <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon/micks-favico-32x32-1.png">
+      <link rel="stylesheet" href="assets/css/style-menu.css">
+      <link href="assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+      <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  	  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  	  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+      <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+      <script src="./assets/pace.js"></script>
+      <link rel="stylesheet" href="radar.css">
+      <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.11.3/datatables.min.css"/>
+      <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.11.3/datatables.min.js"></script>
+  </head>
+<body>
+
+  <div id="header" class="sidebar close"> <!-- Menu -->
+    <div class="logo-details"><i class='bx bxl-javascript'></i><span class="logo_name">Micks T.</span></div>
+    <ul class="nav-links">
+      <li>
+        <a href="lista.html"><i class='bx bx-search-alt'></i><span class="link_name">Pesquisas</span></a>
+        <ul class="sub-menu blank"><li><a class="link_name" href="lista.html">Pesquisas</a></li></ul>
+      </li>
+      <li>
+        <a href="clientes.html"><i class='bx bx-angry'></i><span class="link_name">Clientes</span></a>
+        <ul class="sub-menu blank"><li><a class="link_name" href="clientes.html">Clientes</a></li></ul>
+      </li>
+      <li>
+        <a href="enviar.html"><i class='bx bx-mail-send'></i><span class="link_name">Enviar Pesquisa</span></a>
+        <ul class="sub-menu blank"><li><a class="link_name" href="enviar.html">Enviar Pesquisa</a></li></ul>
+      </li>
+      <li>
+        <a href="perguntas.html"><i class='bx bx-question-mark'></i><span class="link_name">Perguntas</span></a>
+        <ul class="sub-menu blank"><li><a class="link_name" href="perguntas.html">Perguntas</a></li></ul>
+      </li>
+      <li>
+        <a href="grafico.html"><i class='bx bx-line-chart'></i><span class="link_name">Gráfico</span></a>
+        <ul class="sub-menu blank"><li><a class="link_name" href="perguntas.html">Gráfico</a></li></ul>
+      </li>
+      <li>
+        <a href="" onclick="sair()"><i class='bx bx-log-out' ></i><span class="link_name">Sair</span></a>
+        <ul class="sub-menu blank"><li><a class="link_name" href="" onclick="sair()">Sair</a></li></ul>
+      </li>
+      <li>
+        <div class="profile-details"><div class="profile-content"><img src="assets/img/avatar_micks.png" alt="profile"></div></div>
+      </li>
+    </ul>
+  </div><!-- Menu -->
+
+  <section class="home-section">
+    <div class="home-content">
+      <i class='bx bx-menu' ></i>
+      <span class="text"></span>
+    </div>
+  </section>
+
+  <!-- INICIO - Coloque todo seu HTML Aqui -->
+  <div class="home-section">
+    <div class="container-fluid">
+      <h1 class="h3 mb-2 text-gray-800" id="msg"><i class='bx bx-task'></i> Pesquisas feitas</h1>
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+          <div class="card-body">
+            <table id="tabela" class="table table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Nome</th>
+                  <th scope="col">Celular</th>
+                  <th scope="col">Data/Hora</th>
+                  <th scope="col">WhatsApp ?</th>
+                  <th scope="col">Rece. Pesquisa ?</th>
+                  <th scope="col">Editar</th>
+                  <th scope="col">Deletar</th>
+                </tr>
+              </thead>
+              <tbody id="corpo">
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- FIM - Coloque todo seu HTML Aqui -->
+
+  <script src="assets/js/menu_drop_down_Sidebar.js"></script> 
+  <script src="assets/js/data_tables.js"></script>
+  <script src="assets/js/notify.js"></script>
+  <script>
+    // Coloque todo seu JavaScript aqui.
+    const login = sessionStorage.login;
+    const ip = sessionStorage.ip;
+/*
+    $(document).ready( function ($) {
+      $('#cadastrar_celular').mask('(00) 00000-0000');
+    });
+*/
+    function sair(){
+      sessionStorage.login = 'NOT';
+      sessionStorage.ip = '...';
+      $.notify(`Saindo...`, "info");
+      setTimeout(function() {
+          location.replace("index.html");
+      }, 500);
+    }
+
+    if(login != 'OK'){
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Parece que você não tem permissão para isso'
+          });
+        setTimeout(function() {
+          location.replace("index.html");
+        }, 2000);
+    }else{
+        // Se o login for OK, faça as requisições
+
+        axios.get(`${ip}listar_clientes`).then(function (response) {
+        var table = "";
+        for (let index = 0; index < response.data.resposta.length; index++){
+          table = table + `<tr>
+          <td>${index + 1}</td>
+          <td>${response.data.resposta[index].nome}</td>
+          <td>${response.data.resposta[index].celular}</td>
+          <td>${response.data.resposta[index].data_hora}</td>
+          <td>${response.data.resposta[index].zap_valido}</td>
+          <td>${response.data.resposta[index].receber_pesquisa}</td>
+          <td>Editar</td>
+          <td>Deletar</td>
+          </tr>`
+        }
+          document.getElementById('corpo').innerHTML = table;
+          $('#tabela').DataTable();
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
+    }
+    
+  </script>
+</body>
+</html>

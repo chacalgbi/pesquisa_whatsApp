@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+	<title>LOGIN | Pesquisa NPS</title>
+	<meta charset="UTF-8">
+	<meta name="robots" content="noindex">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+  	<link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon/micks-favico-32x32-1.png">
+	<link href="https://fonts.googleapis.com/css?family=Poppins:600&display=swap" rel="stylesheet">
+	<script src="https://kit.fontawesome.com/a81368914c.js"></script>
+	<link rel="stylesheet" type="text/css" href="assets/css/style-login.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+	<script src="./assets/pace.js"></script>
+    <link rel="stylesheet" href="radar.css">
+</head>
+<body>
+	<img class="wave" src="assets/img/wave.png">
+	<div class="container">
+		<div class="img">
+			<img src="assets/img/pesquisa02.svg">
+		</div>
+		<div class="login-content">
+			<div  id="formLogin">
+				<img src="assets/img/avatar_micks.png">
+				<h4 id="msg" class="title">Login Empresa X</h4>
+           		<div class="input-div one">
+           		   <div class="i">
+           		   		<i class="fas fa-user"></i>
+           		   </div>
+           		   <div class="div">
+           		   		<h5>Usuário</h5>
+           		   		<input type="text" id="usuario" class="input">
+           		   </div>
+           		</div>
+           		<div class="input-div pass">
+           		   <div class="i"> 
+           		    	<i class="fas fa-lock"></i>
+           		   </div>
+           		   <div class="div">
+           		    	<h5>Senha</h5>
+           		    	<input type="password" id="password" class="input">
+            	   </div>
+            	</div>
+            	<button type="submit" onclick="login()" class="btn btn-primary">Login</button>
+            </div>
+        </div>
+    </div>   
+    <script src="assets/js/main-focus.js"></script>
+	<script src="assets/js/notify.js"></script>
+	<script>
+		sessionStorage.ip = 'http://localhost:5000/';
+		//sessionStorage.ip = 'http://172.17.1.163:3366/';
+
+		function login(){
+			const ip = sessionStorage.ip;
+			const login = document.getElementById('usuario').value;
+			const senha = document.getElementById('password').value;
+			if(login == '' || senha == ''){
+				document.getElementById('msg').innerHTML = 'Preencha os campos.';
+				swal("Aviso!", "Preencha os campos!", "info");
+			}else{
+				axios.post(`${ip}login`, {
+					usuario: login,
+					senha: senha
+				})
+				.then(function (response) {
+					console.log(response.data);
+					
+					if(response.data.error == 'sim'){
+					document.getElementById('msg').innerHTML = response.data.msg;
+					sessionStorage.login = 'NOT';
+					swal("Erro!", "Dados inválidos!", "error");
+					}else{
+						$.notify(`Bem-Vindo ${login}`, "success");
+						sessionStorage.login = 'OK';
+						sessionStorage.user = login;
+						document.getElementById('msg').innerHTML = response.data.msg;
+						setTimeout(function() { // delay de 1 segundo
+							location.replace("lista.html");
+						}, 2000);
+					}
+					
+				})
+				.catch(function (error) {
+					console.log(error);
+					document.getElementById('msg').innerHTML = response.data.msg;
+				});
+			}
+		}
+	</script>
+</body>
+</html>
